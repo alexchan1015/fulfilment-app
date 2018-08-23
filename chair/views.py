@@ -21,9 +21,9 @@ def dashboard(request):
     # grab_orders(date)
     # grab_orders_woocommerce()
     completed = Order.objects.filter(
-        Q(status='RECEIVED') | Q(status='CANCELLED') | Q(status='REFUSED') | Q(status='CLOSED')).order_by('-received')
+        Q(status='RECEIVED') | Q(status='CANCELLED') | Q(status='REFUSED') | Q(status='CLOSED') | Q(uploaded=True)).order_by('-received')
     pending = Order.objects.filter(
-        Q(status='WAITING_ACCEPTANCE') | Q(status='WAITING_DEBIT_PAYMENT') | Q(status='SHIPPING') | Q(status='SHIPPED')).order_by('-received')
+        (Q(status='WAITING_ACCEPTANCE') | Q(status='WAITING_DEBIT_PAYMENT') | Q(status='SHIPPING') | Q(status='SHIPPED')) & Q(uploaded=False)).order_by('-received')
     list_of_products = OrderStatus.objects.all()
     reports = Report.objects.filter(processed=False)
     # print(pending)

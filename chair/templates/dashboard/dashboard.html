@@ -54,6 +54,7 @@
                         <th>Status</th>
                         <th>Tracking No.</th>
                         <th>Action</th>
+                        <th>Skip All & Log</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -69,62 +70,80 @@
                         <td>{{ order.customer_id.firstname }} {{order.customer_id.lastname }}</td>
                         <!-- Location -->
                         {% if order.customer_id.state == 'BC' %}
-                            <td style="color: #28a745">{{ order.customer_id.city }}<i class="fa fa-home fa-fw" aria-hidden="true"/></td>
+                        <td style="color: #28a745">{{ order.customer_id.city }}<i class="fa fa-home fa-fw" aria-hidden="true"
+                            /></td>
                         {% else %}
-                            <td>{{ order.customer_id.city }}, {{ order.customer_id.state }}</td>
-                        {% endif %} 
+                        <td>{{ order.customer_id.city }}, {{ order.customer_id.state }}</td>
+                        {% endif %}
 
                         <!-- Status, Tracking #, Action -->
-                        {% if order.status == 'SHIPPING' or order.status == 'SHIPPED' %}  
-                            <!-- Status -->
-                            {% if order.newegg_shipped %}
-                                <td>Shipped</td>
-                                <!-- Tracking -->
-                                <td>{% if not order.tracking_id %} None {% else %} {{ order.tracking_id }} {% endif %}</td>
-                                <!-- Action -->
-                                <td>
-                                {% if not order.tracking_id %}
-                                    <button class="btn btn-sm btn-details btn-report btn-primary">Get Tracking</button>
+                        {% if order.status == 'SHIPPING' or order.status == 'SHIPPED' %}
+                        <!-- Status -->
+                        {% if order.newegg_shipped %}
+                        <td>Shipped</td>
+                        <!-- Tracking -->
+                        <td>{% if not order.tracking_id %} None {% else %} {{ order.tracking_id }} {% endif %}</td>
+                        <!-- Action -->
+                        <td>
+                            {% if not order.tracking_id %}
+                                <button class="btn btn-sm btn-details btn-report btn-primary">Get Tracking</button>
                                 {% elif not order.bestbuy_filled and order.source != 'woocommerce' %}
                                     <button class="btn btn-sm btn-details btn-bestbuy-tracking btn-primary">Update Bestbuy</button>
                                 {% else %}
-                                    <button class="btn-log btn-sm btn btn-dark"/>Log Order<i class="fa fa-database fa-fw" aria-hidden="true"/> 
-                                {% endif %}
-                                </td>
-                            {% else %} <!-- Not Shipped Yet --> 
-                                <!-- Status -->
-                                {% if order.customer_id.country == 'US' and order.source == 'woocommerce' %}
-                                <td>Debited (WC US Order)</td>
-                                {% else %}
-                                <td>Debited</td>
-                                {% endif %}
-                                <!-- Tracking -->
-                                <td></td>
-                                <!-- Action -->
-                                {% if order.customer_id.country == 'US' and order.source == 'woocommerce' %}
-                                <!-- SELF FULFILL IF WOOCOMMERCE & AMERICAN CUSTOMER -->
-                                <td><button class="btn-mark-as-fulfilled btn-sm btn btn-danger"/>Mark as Fulfilled<i class="fa fa-thumb-tack fa-fw" aria-hidden="true"/></td>
-                                {% else %}
-                                <td><button class="btn-send btn-sm btn btn-primary"/>Send<i class="fa fa-send fa-fw" aria-hidden="true"/></td>
-                                {% endif %}
-                            {% endif %} 
+                                <button class="btn-log btn-sm btn btn-dark" />Log Order<i class="fa fa-database fa-fw" aria-hidden="true" /> 
+                            {% endif %}
+                        </td>
                         {% else %}
-                            <!-- Status -->
-                            {% if order.status == 'WAITING_ACCEPTANCE' %}
-                                <td>Awaiting Accept</td>
-                                <!-- Tracking -->
-                                <td>None</td>
-                                <!-- Action -->
-                                <td><button class="btn-accept btn-sm btn btn-success"/>Accept<i class="fa fa-check fa-fw" aria-hidden="true"/></td>
-                            {% elif order.status == 'WAITING_DEBIT_PAYMENT' %}
-                                <!-- Status -->
-                                <td>Awaiting Debit</td>
-                                <!-- Tracking -->
-                                <td>None </td>
-                                <!-- Action -->
-                                <td></td>
-                            {% endif %} 
+                        <!-- Not Shipped Yet -->
+                        <!-- Status -->
+                        {% if order.customer_id.country == 'US' and order.source == 'woocommerce' %}
+                        <td>Debited (WC US Order)</td>
+                        {% else %}
+                        <td>Debited</td>
                         {% endif %}
+                        <!-- Tracking -->
+                        <td></td>
+
+                        <!-- Action -->
+                        {% if order.customer_id.country == 'US' and order.source == 'woocommerce' %}
+                            <!-- SELF FULFILL IF WOOCOMMERCE & AMERICAN CUSTOMER -->
+                            <td>
+                                <button class="btn-mark-as-fulfilled btn-sm btn btn-danger" />
+                                    Mark as Fulfilled
+                                <i class="fa fa-thumb-tack fa-fw" aria-hidden="true" />
+
+                            </td>
+                        {% else %}
+                            <td>
+                                <button class="btn-send btn-sm btn btn-primary" />
+                                    Send
+                                <i class="fa fa-send fa-fw" aria-hidden="true" />
+                            </td>
+                        {% endif %} 
+                        {% endif %} 
+                            
+                        {% else %}
+                        <!-- Status -->
+                        {% if order.status == 'WAITING_ACCEPTANCE' %}
+                        <td>Awaiting Accept</td>
+                        <!-- Tracking -->
+                        <td>None</td>
+                        <!-- Action -->
+                        <td>
+                            <button class="btn-accept btn-sm btn btn-success" />
+                                Accept
+                            <i class="fa fa-check fa-fw" aria-hidden="true" />
+                        </td>
+                        {% elif order.status == 'WAITING_DEBIT_PAYMENT' %}
+                        <!-- Status -->
+                        <td>Awaiting Debit</td>
+                        <!-- Tracking -->
+                        <td>None </td>
+                        <!-- Action -->
+                        <td>
+                        </td>
+                        {% endif %} {% endif %}
+                        <td><button class="btn-log btn-sm btn btn-dark" />Log Order<i class="fa fa-database fa-fw" aria-hidden="true" /></td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -164,35 +183,49 @@
                     </tr>
                 </thead>
                 <tbody>
+
                     {% for order in completed %}
                     <tr class="row100 body">
                         <td class="order_id">{{ order.order_id }}</td>
                         <td>{{ order.received | date_formater }}</td>
                         <td>{{ order.part_number }}</td>
                         <td>{{ order.customer_id.firstname }} {{order.customer_id.lastname }}</td>
+
+                        {# Local orders will display a house :) #}
                         {% if order.customer_id.state == 'BC' %}
-                        <td style="color: #28a745">{{ order.customer_id.city }}
-                            <i class="fa fa-home fa-fw " aria-hidden="true " />
-                        </td>
+                            <td style="color: #28a745">
+                                {{ order.customer_id.city }}
+                                <i class="fa fa-home fa-fw " aria-hidden="true " />
+                            </td>
                         {% else %}
-                        <td>{{ order.customer_id.city }}, {{ order.customer_id.state }}</td>
-                        {% endif %} {% if order.status == 'RECEIVED' %}
-                        <td style="color: #28a745">Received</td>
-                        {% else %} {% if order.status == 'CANCELED' %}
-                        <td style="color: #dc3545">CANCELED</td>
-                        {% else %} {% if order.status == 'CLOSED' %}
-                        <td style="color: #dc3545">Closed</td>
-                        {% else %} {% if order.status == 'REFUSED' %}
-                        <td style="color: #dc3545">Refused</td>
-                        {% endif %} {% endif %} {% endif %} {% endif %}
+                            <td>
+                                {{ order.customer_id.city }}, {{ order.customer_id.state }}
+                            </td>
+                        {% endif %}
+                        
+                        {% if order.status == 'RECEIVED' %}
+                            <td style="color: #28a745">Received</td>
+                        {% else %} 
+                            {% if order.status == 'CANCELED' %}
+                                <td style="color: #dc3545">CANCELED</td>
+                            {% else %} 
+                                {% if order.status == 'CLOSED' %}
+                                    <td style="color: #dc3545">Closed</td>
+                                {% else %} 
+                                    {% if order.status == 'REFUSED' %}
+                                        <td style="color: #dc3545">Refused</td>
+                                    {% endif %} 
+                                {% endif %} 
+                            {% endif %}
+                        {% endif %}
 
                         <td style="color: #28a745">
-                            {% if order.uploaded %} Logged {% else %}
-                            <button class="btn-log btn-sm btn btn-dark " />Log Order
-                            <i class="fa fa-database fa-fw " aria-hidden="true " /> {% endif %}
+                            {% if order.uploaded %} 
+                                Logged 
+                            {% else %}
+                                <button class="btn-log btn-sm btn btn-dark" />Log Order<i class="fa fa-database fa-fw" aria-hidden="true" /> 
+                            {% endif %}
                         </td>
-
-
 
                     </tr>
                     {% endfor %}

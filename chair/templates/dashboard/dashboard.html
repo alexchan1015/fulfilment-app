@@ -1,50 +1,50 @@
 {% extends 'base.html' %} {% load static %} {% load filters %} {% block stylesheet %}
-<link rel="stylesheet" type="text/css" href="{% static 'css/dashboard.css' %}"> {% endblock %} {% block content %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/dashboard.css' %}"> {% endblock %} {% block content %}
 
-<div class="landing-img noselect">
-    <div class="limiter">
-        <h6 class="settings-title">
-            <span style="padding:0 10px">Autofulfill Settings</span>
-            <button class="btn btn-light fulfill-button">Expand</button>
-        </h6>
-        <div class="table-wrapper fulfill-settings">
-            <table id="stockTable" class="display">
-                <thead>
+    <div class="landing-img noselect">
+        <div class="limiter">
+            <h6 class="settings-title">
+                <span style="padding:0 10px">Autofulfill Settings</span>
+                <button class="btn btn-light fulfill-button">Expand</button>
+            </h6>
+            <div class="table-wrapper fulfill-settings">
+                <table id="stockTable" class="display">
+                    <thead>
                     <tr class="stock">
                         <th>ITEM NAME</th>
                         <th>PART NUMBER</th>
                         <th>AUTO ACCEPT?</th>
                     </tr>
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
                     {% for item in list_of_products %}
-                    <tr>
-                        <td>{{ item.product_name }}</td>
-                        <td class="sku_id">{{ item.part_number }}</td>
-                        <!-- Toggle -->
-                        <td>
-                            <!-- Switch has access to SKU number on toggle -->
-                            {% if item.auto_fulfill %}
-                            <label class="switch">
-                                <input class="on auto_fulfill-btn" type="checkbox" {% if item.auto_fulfill %} checked {% endif %}>
-                                <div class="slider round"></div>
-                            </label>
-                            {% else %}
-                            <label class="switch">
-                                <input class="auto_fulfill-btn" type="checkbox">
-                                <div class="slider round"></div>
-                            </label>
-                            {% endif %}
-                        </td>
-                    </tr>
+                        <tr>
+                            <td>{{ item.product_name }}</td>
+                            <td class="sku_id">{{ item.part_number }}</td>
+                            <!-- Toggle -->
+                            <td>
+                                <!-- Switch has access to SKU number on toggle -->
+                                {% if item.auto_fulfill %}
+                                    <label class="switch">
+                                        <input class="on auto_fulfill-btn" type="checkbox" {% if item.auto_fulfill %} checked {% endif %}>
+                                        <div class="slider round"></div>
+                                    </label>
+                                {% else %}
+                                    <label class="switch">
+                                        <input class="auto_fulfill-btn" type="checkbox">
+                                        <div class="slider round"></div>
+                                    </label>
+                                {% endif %}
+                            </td>
+                        </tr>
                     {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                    </tbody>
+                </table>
+            </div>
 
-        <div class="table-wrapper">
-            <table id="pendingTable" class="display">
-                <thead>
+            <div class="table-wrapper">
+                <table id="pendingTable" class="display">
+                    <thead>
                     <tr class="pending">
                         <th>Order No.</th>
                         <th>Order Date</th>
@@ -56,122 +56,124 @@
                         <th>Action</th>
                         <th>Skip All & Log</th>
                     </tr>
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
                     {% for order in pending %}
-                    <tr>
-                        <!-- Order No. -->
-                        <td class="order_id">{{ order.order_id }}</td>
-                        <!-- Order Date -->
-                        <td>{{ order.received | date_formater }}</td>
-                        <!-- SKU -->
-                        <td>{{ order.part_number }}</td>
-                        <!-- Customer Name -->
-                        <td>{{ order.customer_id.firstname }} {{order.customer_id.lastname }}</td>
-                        <!-- Location -->
-                        {% if order.customer_id.state == 'BC' %}
-                        <td style="color: #28a745">{{ order.customer_id.city }}<i class="fa fa-home fa-fw" aria-hidden="true"
-                            /></td>
-                        {% else %}
-                        <td>{{ order.customer_id.city }}, {{ order.customer_id.state }}</td>
-                        {% endif %}
-
-                        <!-- Status, Tracking #, Action -->
-                        {% if order.status == 'SHIPPING' or order.status == 'SHIPPED' %}
-                        <!-- Status -->
-                        {% if order.newegg_shipped %}
-                        <td>Shipped</td>
-                        <!-- Tracking -->
-                        <td>{% if not order.tracking_id %} None {% else %} {{ order.tracking_id }} {% endif %}</td>
-                        <!-- Action -->
-                        <td>
-                            {% if not order.tracking_id %}
-                                <button class="btn btn-sm btn-details btn-report btn-primary">Get Tracking</button>
-                                {% elif not order.bestbuy_filled and order.source != 'woocommerce' %}
-                                    <button class="btn btn-sm btn-details btn-bestbuy-tracking btn-primary">Update Bestbuy</button>
-                                {% else %}
-                                <button class="btn-log btn-sm btn btn-dark" />Log Order<i class="fa fa-database fa-fw" aria-hidden="true" /> 
+                        <tr>
+                            <!-- Order No. -->
+                            <td class="order_id">{{ order.order_id }}</td>
+                            <!-- Order Date -->
+                            <td>{{ order.received | date_formater }}</td>
+                            <!-- SKU -->
+                            <td>{{ order.part_number }}</td>
+                            <!-- Customer Name -->
+                            <td>{{ order.customer_id.firstname }} {{order.customer_id.lastname }}</td>
+                            <!-- Location -->
+                            {% if order.customer_id.state == 'BC' %}
+                                <td style="color: #28a745">{{ order.customer_id.city }}<i class="fa fa-home fa-fw" aria-hidden="true"
+                                /></td>
+                            {% else %}
+                                <td>{{ order.customer_id.city }}, {{ order.customer_id.state }}</td>
                             {% endif %}
-                        </td>
-                        {% else %}
-                        <!-- Not Shipped Yet -->
-                        <!-- Status -->
-                        {% if order.customer_id.country == 'US' and order.source == 'woocommerce' %}
-                        <td>Debited (WC US Order)</td>
-                        {% else %}
-                        <td>Debited</td>
-                        {% endif %}
-                        <!-- Tracking -->
-                        <td></td>
 
-                        <!-- Action -->
-                        {% if order.customer_id.country == 'US' and order.source == 'woocommerce' %}
-                            <!-- SELF FULFILL IF WOOCOMMERCE & AMERICAN CUSTOMER -->
-                            <td>
-                                <button class="btn-mark-as-fulfilled btn-sm btn btn-danger" />
-                                    Mark as Fulfilled
-                                <i class="fa fa-thumb-tack fa-fw" aria-hidden="true" />
+                            <!-- Status, Tracking #, Action -->
+                            {% if order.status == 'SHIPPING' or order.status == 'SHIPPED' %}
+                                <!-- Status -->
+                                {% if order.newegg_shipped %}
+                                    <td>Shipped</td>
+                                    <!-- Tracking -->
+                                    <td>{% if not order.tracking_id %} None {% else %} {{ order.tracking_id }} {% endif %}</td>
+                                    <!-- Action -->
+                                    <td>
+                                        {% if not order.tracking_id %}
+                                            <button class="btn btn-sm btn-details btn-report btn-primary">Get Tracking</button>
+                                        {% elif not order.bestbuy_filled and order.source != 'woocommerce' %}
+                                            <button class="btn btn-sm btn-details btn-bestbuy-tracking btn-primary">Update Bestbuy</button>
+                                        {% else %}
+                                            <button class="btn-log btn-sm btn btn-dark" />Log Order<i class="fa fa-database fa-fw" aria-hidden="true" />
+                                        {% endif %}
+                                    </td>
+                                {% else %}
+                                    <!-- Not Shipped Yet -->
+                                    <!-- Status -->
+                                    {% if order.customer_id.country == 'US' and order.source == 'woocommerce' %}
+                                        <td>Debited (WC US Order)</td>
+                                    {% else %}
+                                        <td>Debited</td>
+                                    {% endif %}
+                                    <!-- Tracking -->
+                                    <td></td>
 
-                            </td>
-                        {% else %}
-                            <td>
-                                <button class="btn-send btn-sm btn btn-primary" />
-                                    Send
-                                <i class="fa fa-send fa-fw" aria-hidden="true" />
-                            </td>
-                        {% endif %} 
-                        {% endif %} 
-                            
-                        {% else %}
-                        <!-- Status -->
-                        {% if order.status == 'WAITING_ACCEPTANCE' %}
-                        <td>Awaiting Accept</td>
-                        <!-- Tracking -->
-                        <td>None</td>
-                        <!-- Action -->
-                        <td>
-                            <button class="btn-accept btn-sm btn btn-success" />
-                                Accept
-                            <i class="fa fa-check fa-fw" aria-hidden="true" />
-                        </td>
-                        {% elif order.status == 'WAITING_DEBIT_PAYMENT' %}
-                        <!-- Status -->
-                        <td>Awaiting Debit</td>
-                        <!-- Tracking -->
-                        <td>None </td>
-                        <!-- Action -->
-                        <td>
-                        </td>
-                        {% endif %} {% endif %}
-                        <td><button class="btn-log btn-sm btn btn-dark" />Log Order<i class="fa fa-database fa-fw" aria-hidden="true" /></td>
-                    </tr>
+                                    <!-- Action -->
+                                    {% if order.customer_id.country == 'US' and order.source == 'woocommerce' %}
+                                        <!-- SELF FULFILL IF WOOCOMMERCE & AMERICAN CUSTOMER -->
+                                        <td>
+                                            <button class="btn-mark-as-fulfilled btn-sm btn btn-danger" />
+                                            Mark as Fulfilled
+                                            <i class="fa fa-thumb-tack fa-fw" aria-hidden="true" />
+
+                                        </td>
+                                    {% elif order.customer_id.state == 'BC' %}
+                                        <button class="btn btn-sm btn-details btn-bestbuy-tracking btn-primary">Update Bestbuy</button>
+                                    {% else %}
+                                        <td>
+                                            <button class="btn-send btn-sm btn btn-primary" />
+                                            Send
+                                            <i class="fa fa-send fa-fw" aria-hidden="true" />
+                                        </td>
+                                    {% endif %}
+                                {% endif %}
+
+                            {% else %}
+                                <!-- Status -->
+                                {% if order.status == 'WAITING_ACCEPTANCE' %}
+                                    <td>Awaiting Accept</td>
+                                    <!-- Tracking -->
+                                    <td>None</td>
+                                    <!-- Action -->
+                                    <td>
+                                        <button class="btn-accept btn-sm btn btn-success" />
+                                        Accept
+                                        <i class="fa fa-check fa-fw" aria-hidden="true" />
+                                    </td>
+                                {% elif order.status == 'WAITING_DEBIT_PAYMENT' %}
+                                    <!-- Status -->
+                                    <td>Awaiting Debit</td>
+                                    <!-- Tracking -->
+                                    <td>None </td>
+                                    <!-- Action -->
+                                    <td>
+                                    </td>
+                                {% endif %} {% endif %}
+                            <td><button class="btn-log btn-sm btn btn-dark" />Log Order<i class="fa fa-database fa-fw" aria-hidden="true" /></td>
+                        </tr>
                     {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <div class="table-wrapper">
-            <table id="reportTable" class="display">
-                <thead>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-wrapper">
+                <table id="reportTable" class="display">
+                    <thead>
                     <tr class="report">
                         <th style="text-align:center">Report ID</th>
                         <th style="text-align:center">Process</th>
                     </tr>
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
                     {% for report in reports %}
-                    <tr>
-                        <td style="text-align:center" class="report_id">{{ report.request_id }}</td>
-                        <td style="text-align:center">
-                            <button class="btn btn-primary btn-sm btn-parse-report">Process Report</button>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td style="text-align:center" class="report_id">{{ report.request_id }}</td>
+                            <td style="text-align:center">
+                                <button class="btn btn-primary btn-sm btn-parse-report">Process Report</button>
+                            </td>
+                        </tr>
                     {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <div class="table-wrapper">
-            <table id="completeTable" class="display">
-                <thead>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-wrapper">
+                <table id="completeTable" class="display">
+                    <thead>
                     <tr class="complete">
                         <th>Order No.</th>
                         <th>Order Date</th>
@@ -181,64 +183,64 @@
                         <th>Status</th>
                         <th>Total: {{ completed_len }}</th>
                     </tr>
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
 
                     {% for order in completed %}
-                    <tr class="row100 body">
-                        <td class="order_id">{{ order.order_id }}</td>
-                        <td>{{ order.received | date_formater }}</td>
-                        <td>{{ order.part_number }}</td>
-                        <td>{{ order.customer_id.firstname }} {{order.customer_id.lastname }}</td>
+                        <tr class="row100 body">
+                            <td class="order_id">{{ order.order_id }}</td>
+                            <td>{{ order.received | date_formater }}</td>
+                            <td>{{ order.part_number }}</td>
+                            <td>{{ order.customer_id.firstname }} {{order.customer_id.lastname }}</td>
 
-                        {# Local orders will display a house :) #}
-                        {% if order.customer_id.state == 'BC' %}
-                            <td style="color: #28a745">
-                                {{ order.customer_id.city }}
-                                <i class="fa fa-home fa-fw " aria-hidden="true " />
-                            </td>
-                        {% else %}
-                            <td>
-                                {{ order.customer_id.city }}, {{ order.customer_id.state }}
-                            </td>
-                        {% endif %}
-                        
-                        {% if order.status == 'RECEIVED' %}
-                            <td style="color: #28a745">Received</td>
-                        {% else %} 
-                            {% if order.status == 'CANCELED' %}
-                                <td style="color: #dc3545">CANCELED</td>
-                            {% else %} 
-                                {% if order.status == 'CLOSED' %}
-                                    <td style="color: #dc3545">Closed</td>
-                                {% else %} 
-                                    {% if order.status == 'REFUSED' %}
-                                        <td style="color: #dc3545">Refused</td>
-                                    {% endif %} 
-                                {% endif %} 
-                            {% endif %}
-                        {% endif %}
-
-                        <td style="color: #28a745">
-                            {% if order.uploaded %} 
-                                Logged 
+                            {# Local orders will display a house :) #}
+                            {% if order.customer_id.state == 'BC' %}
+                                <td style="color: #28a745">
+                                    {{ order.customer_id.city }}
+                                    <i class="fa fa-home fa-fw " aria-hidden="true " />
+                                </td>
                             {% else %}
-                                <button class="btn-log btn-sm btn btn-dark" />Log Order<i class="fa fa-database fa-fw" aria-hidden="true" /> 
+                                <td>
+                                    {{ order.customer_id.city }}, {{ order.customer_id.state }}
+                                </td>
                             {% endif %}
-                        </td>
 
-                    </tr>
+                            {% if order.status == 'RECEIVED' %}
+                                <td style="color: #28a745">Received</td>
+                            {% else %}
+                                {% if order.status == 'CANCELED' %}
+                                    <td style="color: #dc3545">CANCELED</td>
+                                {% else %}
+                                    {% if order.status == 'CLOSED' %}
+                                        <td style="color: #dc3545">Closed</td>
+                                    {% else %}
+                                        {% if order.status == 'REFUSED' %}
+                                            <td style="color: #dc3545">Refused</td>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+
+                            <td style="color: #28a745">
+                                {% if order.uploaded %}
+                                    Logged
+                                {% else %}
+                                    <button class="btn-log btn-sm btn btn-dark" />Log Order<i class="fa fa-database fa-fw" aria-hidden="true" />
+                                {% endif %}
+                            </td>
+
+                        </tr>
                     {% endfor %}
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 {% endblock content %} {% block javascript %}
 
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" charset="utf8" src="{% static 'js/dashboard.js' %}"></script>
-<script>
-// extra javascript lawl
-</script> {% endblock %}
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="{% static 'js/dashboard.js' %}"></script>
+    <script>
+      // extra javascript lawl
+    </script> {% endblock %}

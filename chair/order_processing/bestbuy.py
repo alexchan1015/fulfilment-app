@@ -85,8 +85,14 @@ def process_order(order, accept):
 
 def send_tracking_bestbuy(order):
     headers = {'Authorization': BESTBUY_KEY, 'Content-Type': 'application/json'}
-    tracking_data = {'carrier_code': order.carrier_code,
-                     'tracking_number': order.tracking_id}
+    if order.customer_id.state == 'BC':
+        tracking_data = {'carrier_code': 'Other',
+                         'carrier_name': 'Pulselabz',
+                         'carrier_url': 'https://www.bestbuy.ca/profile/checkorderstatus.aspx',
+                         'tracking_number': 'Order coming by Pulselabz Local Delivery within 2 business days.'}
+    else:
+        tracking_data = {'carrier_code': order.carrier_code,
+                         'tracking_number': order.tracking_id}
     r1 = requests.put('https://marketplace.bestbuy.ca/api/orders/{}/tracking'.format(order.order_id),
                       data=json.dumps(tracking_data), headers=headers)
     r2 = requests.put('https://marketplace.bestbuy.ca/api/orders/{}/ship'.format(order.order_id), headers=headers)

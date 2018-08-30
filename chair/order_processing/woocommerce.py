@@ -11,7 +11,7 @@ def grab_orders_woocommerce():
         wp_api=True,
         version="wc/v1"
     )
-    orders = wcapi.get("orders?status=processing&per_page=10")
+    orders = wcapi.get("orders?per_page=50")
     for order in orders.json():
         load_order_wc(order)
 
@@ -28,19 +28,23 @@ def load_order_wc(order_info):
         product_name = item.get('name')
         order, created = Order.objects.get_or_create(
             order_id=order_info.get('number'), product_name=product_name)
-        if created:
-            order.customer_id = customer
+        order.customer_id = customer
+        if order_info.get('status') == 'processing':
             order.status = "SHIPPING"
-            order.part_number = item.get('sku')
-            order.quantity = item.get('quantity')
-            order.received = order_info.get('date_created')
-            order.shipping_type = order_info.get('shipping_lines')[i].get('method_title')
-            order.total_price = order_info.get('total')
-            order.source = "woocommerce"
-            try:
-                order.part_number = PRODUCT_INFO.get(product_name)[1]
-            except:
-                pass
+        elif order_info.get('status') == 'completed':
+            order.status = 'RECEIVED'
+        else:
+            order.status = order_info.get('status')
+        order.part_number = item.get('sku')
+        order.quantity = item.get('quantity')
+        order.received = order_info.get('date_created')
+        order.shipping_type = order_info.get('shipping_lines')[i].get('method_title')
+        order.total_price = order_info.get('total')
+        order.source = "woocommerce"
+        try:
+            order.part_number = PRODUCT_INFO.get(product_name)[1]
+        except:
+            pass
         order.save()
 
 

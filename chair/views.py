@@ -148,6 +148,7 @@ def mark_fulfilled(request, order_id):
     try:
         order = Order.objects.get(order_id=order_id)
         order.bestbuy_filled = True
+        order.status = 'SHIPPED'
         order.save()
         return JsonResponse({'status': 'success', 'message': 'Order {} marked as fulfilled'.format(order_id)})
     except:

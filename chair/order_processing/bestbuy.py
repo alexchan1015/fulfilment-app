@@ -89,7 +89,9 @@ def send_tracking_bestbuy(order):
         tracking_data = {'carrier_code': 'Other',
                          'carrier_name': 'Pulselabz',
                          'carrier_url': 'https://www.bestbuy.ca/profile/checkorderstatus.aspx',
-                         'tracking_number': 'Order coming by Pulselabz Local Delivery within 2 business days.'}
+                         'tracking_number': 'Order coming by Pulselabz Local Delivery within 2 business days.'
+                                            ' Please contact 7782518266 or refer to our latest Message for specific delivery date/time information.'
+                                            ' Link: https://www.bestbuy.ca/profile/checkorderstatus.aspxhttps://www.bestbuy.ca/profile/'}
     else:
         tracking_data = {'carrier_code': order.carrier_code,
                          'tracking_number': order.tracking_id}

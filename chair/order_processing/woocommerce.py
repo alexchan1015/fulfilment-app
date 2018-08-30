@@ -38,7 +38,7 @@ def load_order_wc(order_info):
         order.part_number = item.get('sku')
         order.quantity = item.get('quantity')
         order.received = order_info.get('date_created')
-        order.shipping_type = order_info.get('shipping_lines')[i].get('method_title')
+        order.shipping_type = order_info.get('shipping_lines')[0].get('method_title')
         order.total_price = order_info.get('total')
         order.source = "woocommerce"
         try:

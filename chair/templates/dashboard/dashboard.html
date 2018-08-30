@@ -85,9 +85,9 @@
                                     <td>{% if not order.tracking_id %} None {% else %} {{ order.tracking_id }} {% endif %}</td>
                                     <!-- Action -->
                                     <td>
-                                        {% if not order.tracking_id %}
+                                        {% if not order.tracking_id and order.customer_id.state == 'BC' %}
                                             <button class="btn btn-sm btn-details btn-report btn-primary">Get Tracking</button>
-                                        {% elif not order.bestbuy_filled and order.source != 'woocommerce' %}
+                                        {% elif not order.bestbuy_filled and order.source != 'woocommerce'%}
                                             <button class="btn btn-sm btn-details btn-bestbuy-tracking btn-primary">Update Bestbuy</button>
                                         {% else %}
                                             <button class="btn-log btn-sm btn btn-dark" />Log Order<i class="fa fa-database fa-fw" aria-hidden="true" />

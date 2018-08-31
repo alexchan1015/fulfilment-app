@@ -150,7 +150,7 @@ def parse_report(report_id):
             cur_order.tracking_id = tracking_id
             cur_order.save()
             if cur_order.source == 'bestbuy':
-                processed = send_tracking_bestbuy(cur_order)
+                processed = send_tracking_bestbuy(cur_order, False)
                 if processed > 0:
                     cur_order.bestbuy_filled = True
                     cur_order.save()

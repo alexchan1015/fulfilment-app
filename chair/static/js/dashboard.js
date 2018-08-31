@@ -148,9 +148,10 @@ $(".btn-bestbuy-tracking ").click(function() {
     .parent()
     .siblings(".order_id")
     .html();
+  var local = $(this).attr('id') === 'local';
   $.ajax({
     type: "GET",
-    url: "../orders/update_tracking/" + order_id + "/"
+    url: "../orders/update_tracking/" + order_id + "/?local=" + local + "/"
   }).done(function(msg) {
     location.reload();
     console.log(msg);

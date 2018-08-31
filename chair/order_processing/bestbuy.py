@@ -83,9 +83,9 @@ def process_order(order, accept):
     return r
 
 
-def send_tracking_bestbuy(order):
+def send_tracking_bestbuy(order, local):
     headers = {'Authorization': BESTBUY_KEY, 'Content-Type': 'application/json'}
-    if order.customer_id.state == 'BC':
+    if local:
         tracking_data = {'carrier_code': 'Other',
                          'carrier_name': 'Pulselabz',
                          'carrier_url': 'https://www.bestbuy.ca/profile/checkorderstatus.aspx',

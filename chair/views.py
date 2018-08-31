@@ -88,8 +88,9 @@ def reject_order(request, order_id):
 # and parsing the tracking_id from the newegg feed
 @login_required()
 def update_tracking(request, order_id):
+    local = request.GET.get('local')
     order = Order.objects.get(order_id=order_id)
-    send_tracking_bestbuy(order)
+    send_tracking_bestbuy(order, local)
     order.bestbuy_filled = True
     order.save()
     return JsonResponse({'status': 'success', 'message': 'tracking number for order {} has been updated'.format(order_id)})

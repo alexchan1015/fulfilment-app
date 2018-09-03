@@ -59,7 +59,7 @@ def update_customer_info_wc(customer_id, billing_info, customer_info):
         customer.phone = billing_info.get('phone')
         customer.state = customer_info.get('state')
         customer.street = customer_info.get('address_1')
-        customer.email = customer_info.get('email')
+        customer.email = billing_info.get('email')
         if customer_info.get('address_2'):
             customer.street = '{} - {}'.format(customer_info.get('address_2'), customer_info.get('address_1'))
         customer.zip = customer_info.get('postcode')

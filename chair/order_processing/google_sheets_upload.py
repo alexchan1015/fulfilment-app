@@ -25,7 +25,7 @@ def post_order_info(order_id, sheets_key):
         worksheet.update_acell('L{}'.format(next_free), order.total_price)
     if order.customer_id.state == 'BC':
         worksheet.update_acell('F{}'.format(next_free), 'BC Retail')
-    elif order.customer_id.country == 'USA' and order.source == 'woocommerce':
+    elif order.customer_id.country == 'US' and order.source == 'woocommerce':
         worksheet.update_acell('F{}'.format(next_free), 'USA')
     else:
         worksheet.update_acell('F{}'.format(next_free), order.customer_id.state)

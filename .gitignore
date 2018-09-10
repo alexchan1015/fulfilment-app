@@ -8,4 +8,4 @@ db.sqlite3
 secrets.py
 
 client_secret.json
-pulselabz.json
+pulselabz.jsonsendgrid.env

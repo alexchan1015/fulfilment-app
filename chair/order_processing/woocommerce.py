@@ -1,13 +1,14 @@
 from woocommerce import API
 from chair.product_info import PRODUCT_INFO
 from chair.models import Order, Customer
+from scraper.settings import WC_KEY, WC_SECRET
 
 
 def grab_orders_woocommerce():
     wcapi = API(
         url="https://pulselabz.com",
-        consumer_key="ck_a14883eff094abe7652196f03533c18b9c05eb0b",
-        consumer_secret="cs_47027dbf997bd9f53155f7251ed5b2cab27ac323",
+        consumer_key=WC_KEY,
+        consumer_secret=WC_SECRET,
         wp_api=True,
         version="wc/v1"
     )

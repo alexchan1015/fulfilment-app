@@ -140,7 +140,7 @@ LOGIN_REDIRECT_URL = "/dashboard"
 
 #  variables
 try:
-    from secrets import BESTBUY_KEY, CARRIER_CODE, NEWEGG_KEY, NEWEGG_AUTH
+    from secrets import BESTBUY_KEY, CARRIER_CODE, NEWEGG_KEY, NEWEGG_AUTH, SG_KEY, EMAIL_USERNAME, EMAIL_PASSWORD, WC_KEY, WC_SECRET
     with open('pulselabz.json', 'r') as f:
         GOOGLE_CREDS = json.load(f)
 except:
@@ -149,3 +149,14 @@ except:
     NEWEGG_AUTH = str(os.environ["NEWEGG_AUTH"])
     NEWEGG_KEY = str(os.environ["NEWEGG_KEY"])
     GOOGLE_CREDS = str(os.environ["GDRIVE"])
+    EMAIL_USERNAME = str(os.environ["EMAIL_USERNAME"])
+    EMAIL_PASSWORD = str(os.environ["EMAIL_PASSWORD"])
+    SG_KEY = str(os.environ["SG_KEY"])
+    WC_KEY = str(os.environ["WC_KEY"])
+    WC_SECRET = str(os.environ["WC_SECRET"])
+
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = EMAIL_USERNAME
+EMAIL_HOST_PASSWORD = EMAIL_PASSWORD
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True

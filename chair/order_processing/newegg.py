@@ -77,17 +77,15 @@ def get_newegg_order(order):
 
 
 def get_shipping_type(order):
-    if order.source == 'woocommerce':
-        shipping = "CAN Ground (2-7 Business Days)"
-    if order.customer_id.country == 'Canada':
-        if 'Express' in order.shipping_type:
+    if order.customer_id.country == 'Canada' or order.source == 'woocommerce':
+        if 'Express' or 'Expedited' in order.shipping_type:
             shipping = "CAN Express (2-5 Business Days)"
-        elif 'Regular' in order.shipping_type:
+        else:
             shipping = "CAN Ground (2-7 Business Days)"
     else:
-        if 'Express' in order.shipping_type:
+        if 'Express' or 'Expedited' in order.shipping_type:
             shipping = "Expedited Shipping (3-5 Business Days)"
-        elif 'Regular' in order.shipping_type:
+        else:
             shipping = "Standard Shipping (2-7 Business Days)"
     return shipping
 

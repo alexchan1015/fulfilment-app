@@ -205,23 +205,7 @@
                                     {{ order.customer_id.city }}, {{ order.customer_id.state }}
                                 </td>
                             {% endif %}
-
-                            {% if order.status == 'RECEIVED' %}
-                                <td style="color: #28a745">Received</td>
-                            {% else %}
-                                {% if order.status == 'CANCELED' %}
-                                    <td style="color: #dc3545">CANCELED</td>
-                                {% else %}
-                                    {% if order.status == 'CLOSED' %}
-                                        <td style="color: #dc3545">Closed</td>
-                                    {% else %}
-                                        {% if order.status == 'REFUSED' %}
-                                            <td style="color: #dc3545">Refused</td>
-                                        {% endif %}
-                                    {% endif %}
-                                {% endif %}
-                            {% endif %}
-
+                            <td style="color: #28a745">{{ order.status }}</td>
                             <td style="color: #28a745">
                                 {% if order.uploaded %}
                                     Logged

@@ -11,6 +11,8 @@ class Command(BaseCommand):
                 datetime.timedelta(days=10)).strftime('%Y-%m-%d')
         grab_orders(date)
         grab_orders_woocommerce()
+        old_reports = Report.objects.all().order_by('-id')[:10]
+        Report.objects.all().exclude(request_id__in=old_reports.values_list('request_id', flat=True)).delete()
         autofulfill = OrderStatus.objects.filter(auto_fulfill=True).values_list('part_number', flat=True)
         for order in Order.objects.filter(status='WAITING_ACCEPTANCE'):
             if order.part_number in autofulfill and order.source == 'bestbuy':

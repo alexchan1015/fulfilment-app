@@ -17,5 +17,9 @@ PRODUCT_INFO = {
     "PulseLabz Challenger Series Gaming Chair - Red/Black": ("9SIAFG16R80209", "C-R"),
     "PulseLabz Challenger Series Gaming Chair (W-trim) - White/Black": ('', "C-W"),
     "PulseLabz Challenger Series Gaming Chair - Green/Black": ('', "C-G"),
-    "PulseLabz Challenger Series Gaming Chair - Orange/Black": ('', "C-O")
+    "PulseLabz Challenger Series Gaming Chair - Orange/Black": ('', "C-O"),
+    "Pulselabz Weapon Series Mousepad": ("9SIAFG180E0723","MP-L"),
+    "Adjustable Ergonomic Electronic Standing Desk - Motiongrey - White Frame": ("9SIAFG17P44124", "MG1-White"),
+    "MotionGrey-Black Desk Frame": ("9SIAFG17NX0510", "MG-Black"),
+    "Adjustable Ergonomic Electronic Standing Desk - Motiongrey - Grey Frame": ("9SIAFG18GG9485", "MGFrame-Grey")
 }

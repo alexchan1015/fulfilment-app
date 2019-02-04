@@ -13,5 +13,5 @@ class Command(BaseCommand):
         grab_orders_woocommerce()
         autofulfill = OrderStatus.objects.filter(auto_fulfill=True).values_list('part_number', flat=True)
         for order in Order.objects.filter(status='WAITING_ACCEPTANCE'):
-            if order.part_number in autofulfill:
-                process_order(order.order_id, True)
+            if order.part_number in autofulfill and order.source == 'bestbuy':
+                process_order(order, True)

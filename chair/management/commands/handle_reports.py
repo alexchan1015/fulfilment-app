@@ -5,6 +5,7 @@ from chair.models import Report, Order
 
 class Command(BaseCommand):
     def handle(self, *app_labels, **options):
+        Report.objects.filter(processed=1).delete()
         reports = Report.objects.filter(processed=0)
         for report in reports:
             try:

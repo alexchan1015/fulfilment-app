@@ -121,7 +121,7 @@ def post_gsheets(request, order_id, sheets_key):
     try:
         post_order_info(order_id, sheets_key)
     except Exception as e:
-        return JsonResponse({'status': 'error', 'message': 'Error in uploading order {} with error {}'.format(order_id, error)})
+        return JsonResponse({'status': 'error', 'message': 'Error in uploading order {} with error {}'.format(order_id, e)})
     order = Order.objects.get(order_id=order_id)
     order.uploaded = True
     order.save()

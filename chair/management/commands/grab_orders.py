@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from chair.order_processing.bestbuy import grab_orders, process_order
 from chair.order_processing.woocommerce import grab_orders_woocommerce
-from chair.models import Order, OrderStatus
+from chair.models import Order, OrderStatus, Report
 import datetime
 
 

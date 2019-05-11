@@ -2,10 +2,12 @@
 *~
 __pycache__
 myvenv
+env
 .vscode
 db.sqlite3
 .DS_Store
 secrets.py
 
 client_secret.json
-pulselabz.jsonsendgrid.env
+pulselabz.json
+sendgrid.env

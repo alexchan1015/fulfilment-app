@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^dashboard/$', dashboard, name='dashboard'),
     url(r'^orders/grab_latest/$', grab_latest_orders, name='grab_latest_orders'),
     url(r'^orders/mark_fulfilled/(?P<order_id>[-_a-zA-Z0-9]+)/$', mark_fulfilled, name='mark_fulfilled'),
+    url(r'^orders/walmart_refund/$', walmart_refund, name='walmart_refund'),
     url(r'^orders/accept/(?P<order_id>[-_a-zA-Z0-9]+)/$',
         accept_order, name='accept_order'),
     url(r'^orders/reject/(?P<order_id>[-_a-zA-Z0-9]+)/$',

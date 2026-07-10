@@ -141,6 +141,10 @@ LOGIN_REDIRECT_URL = "/dashboard"
 #  variables
 try:
     from secrets import BESTBUY_KEY, CARRIER_CODE, NEWEGG_KEY, NEWEGG_AUTH, SG_KEY, EMAIL_USERNAME, EMAIL_PASSWORD, WC_KEY, WC_SECRET
+    try:
+        from secrets import WALMART_CLIENT_ID, WALMART_CLIENT_SECRET, WALMART_MARKET, WALMART_API_URL, WALMART_CHANNEL_TYPE, WALMART_PARTNER_ID
+    except ImportError:
+        WALMART_CLIENT_ID = WALMART_CLIENT_SECRET = WALMART_MARKET = WALMART_API_URL = WALMART_CHANNEL_TYPE = WALMART_PARTNER_ID = None
     with open('pulselabz.json', 'r') as f:
         GOOGLE_CREDS = json.load(f)
 except:
@@ -154,6 +158,12 @@ except:
     SG_KEY = str(os.environ["SG_KEY"])
     WC_KEY = str(os.environ["WC_KEY"])
     WC_SECRET = str(os.environ["WC_SECRET"])
+    WALMART_CLIENT_ID = os.environ.get("WALMART_CLIENT_ID")
+    WALMART_CLIENT_SECRET = os.environ.get("WALMART_CLIENT_SECRET")
+    WALMART_MARKET = os.environ.get("WALMART_MARKET", "ca")
+    WALMART_API_URL = os.environ.get("WALMART_API_URL", "https://marketplace.walmartapis.com")
+    WALMART_CHANNEL_TYPE = os.environ.get("WALMART_CHANNEL_TYPE")
+    WALMART_PARTNER_ID = os.environ.get("WALMART_PARTNER_ID")
 
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = EMAIL_USERNAME

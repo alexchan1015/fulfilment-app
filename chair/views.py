@@ -8,6 +8,14 @@ from chair.order_processing.bestbuy import grab_orders, process_order, send_trac
 from chair.order_processing.newegg import newegg_ship, get_report, parse_report
 from chair.order_processing.google_sheets_upload import post_order_info
 from chair.order_processing.woocommerce import grab_orders_woocommerce
+from chair.order_processing.walmart import (
+    REFUND_REASONS,
+    WalmartApiError,
+    get_walmart_order,
+    is_wfs_order,
+    push_walmart_refund,
+    refundable_summary,
+)
 import datetime
 
 
@@ -154,3 +162,68 @@ def mark_fulfilled(request, order_id):
         return JsonResponse({'status': 'success', 'message': 'Order {} marked as fulfilled'.format(order_id)})
     except:
         return JsonResponse({'status': 'failure', 'message': 'Order {} does not exist'.format(order_id)})
+
+
+@login_required()
+def walmart_refund(request):
+    context = {
+        'reasons': REFUND_REASONS,
+        'component': 'both',
+        'reason': 'CustomerReturn',
+        'allow_wfs': False,
+    }
+    if request.method == 'GET' and request.GET.get('purchase_order_id'):
+        purchase_order_id = request.GET.get('purchase_order_id').strip()
+        component = request.GET.get('component') or 'both'
+        context.update({'purchase_order_id': purchase_order_id, 'component': component})
+        try:
+            order = get_walmart_order(purchase_order_id)
+            context.update({
+                'order': order,
+                'summary': refundable_summary(order, component=component),
+                'is_wfs': is_wfs_order(order),
+            })
+        except WalmartApiError as e:
+            context['error'] = str(e)
+        return render(request, 'dashboard/walmart_refund.html', context=context)
+
+    if request.method == 'POST':
+        purchase_order_id = (request.POST.get('purchase_order_id') or '').strip()
+        amount = (request.POST.get('amount') or '').strip()
+        component = request.POST.get('component') or 'both'
+        reason = request.POST.get('reason') or 'CustomerReturn'
+        allow_wfs = request.POST.get('allow_wfs') == 'on'
+        confirmed = request.POST.get('confirm') == 'on'
+        context.update({
+            'purchase_order_id': purchase_order_id,
+            'amount': amount,
+            'component': component,
+            'reason': reason,
+            'allow_wfs': allow_wfs,
+        })
+        if not confirmed:
+            context['error'] = 'Confirm the refund before submitting.'
+        elif not purchase_order_id or not amount:
+            context['error'] = 'Purchase order ID and amount are required.'
+        else:
+            try:
+                result = push_walmart_refund(
+                    purchase_order_id,
+                    amount,
+                    component=component,
+                    reason=reason,
+                    allow_wfs=allow_wfs,
+                )
+                context.update({
+                    'success': True,
+                    'order': result['order'],
+                    'refund_id': result.get('refund_id'),
+                    'response': result.get('response'),
+                    'summary': refundable_summary(result['order'], component=component),
+                    'is_wfs': is_wfs_order(result['order']),
+                })
+            except WalmartApiError as e:
+                context['error'] = str(e)
+        return render(request, 'dashboard/walmart_refund.html', context=context)
+
+    return render(request, 'dashboard/walmart_refund.html', context=context)
